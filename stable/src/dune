@@ -1,0 +1,2 @@
+(library (name trie_stable) (public_name trie.trie_stable)
+ (libraries core trie) (preprocess (pps ppx_jane)))
