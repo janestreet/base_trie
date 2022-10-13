@@ -44,10 +44,9 @@ module Node0 : sig
     -> ('key, ('chain, 'data, 'desc) t, 'cmp) Map.Using_comparator.Tree.t
 
   val create
-    :  keychainable:('chain, (_ * 'key * 'cmp * _ * _ as 'desc)) Keychainable.t
-    -> datum:'data option
+    :  datum:'data option
     -> tries:('key, ('chain, 'data, 'desc) t, 'cmp) Map.Using_comparator.Tree.t
-    -> ('chain, 'data, 'desc) t
+    -> ('chain, 'data, (_ * 'key * 'cmp * _ * _ as 'desc)) t
 
   (** Defines the data structure invariant prior to serialization definitions. *)
   val invariant
@@ -78,12 +77,9 @@ end = struct
   ;;
 
   (* [create] maintains the invariant that nodes have no empty children. *)
-  let create ~keychainable ~datum ~tries =
+  let create ~datum ~tries =
     let tries =
-      Map.Using_comparator.Tree.filter
-        tries
-        ~comparator:(Keychainable.comparator keychainable)
-        ~f:(fun trie -> not (is_empty trie))
+      Map.Using_comparator.Tree.filter tries ~f:(fun trie -> not (is_empty trie))
     in
     { datum; tries }
   ;;
@@ -225,7 +221,6 @@ module Node = struct
       let%map.Result trie = f t in
       List.fold stack ~init:trie ~f:(fun acc (key, context) ->
         create
-          ~keychainable
           ~datum:(datum context)
           ~tries:
             (Map.Using_comparator.Tree.set
@@ -282,29 +277,29 @@ module Node = struct
 
   let set ~keychainable t ~keychain ~data =
     update_trie ~keychainable t keychain ~f:(fun trie ->
-      create ~keychainable ~datum:(Some data) ~tries:(tries trie))
+      create ~datum:(Some data) ~tries:(tries trie))
   ;;
 
   let remove ~keychainable t keychain =
     update_trie ~keychainable t keychain ~f:(fun trie ->
-      create ~keychainable ~datum:None ~tries:(tries trie))
+      create ~datum:None ~tries:(tries trie))
   ;;
 
   let change ~keychainable t keychain ~f =
     update_trie ~keychainable t keychain ~f:(fun trie ->
-      create ~keychainable ~datum:(f (datum trie)) ~tries:(tries trie))
+      create ~datum:(f (datum trie)) ~tries:(tries trie))
   ;;
 
   let update ~keychainable t keychain ~f =
     update_trie ~keychainable t keychain ~f:(fun trie ->
-      create ~keychainable ~datum:(Some (f (datum trie))) ~tries:(tries trie))
+      create ~datum:(Some (f (datum trie))) ~tries:(tries trie))
   ;;
 
   let add_result ~keychainable t ~keychain ~data =
     update_trie_result ~keychainable t keychain ~f:(fun trie ->
       match datum trie with
       | Some _ -> Error keychain
-      | None -> Ok (create ~keychainable ~datum:(Some data) ~tries:(tries trie)))
+      | None -> Ok (create ~datum:(Some data) ~tries:(tries trie)))
   ;;
 
   let add ~keychainable t ~keychain ~data =
@@ -323,7 +318,6 @@ module Node = struct
   let add_multi ~keychainable t ~keychain ~data =
     update_trie ~keychainable t keychain ~f:(fun trie ->
       create
-        ~keychainable
         ~datum:(Some (data :: Option.value (datum trie) ~default:[]))
         ~tries:(tries trie))
   ;;
@@ -335,7 +329,7 @@ module Node = struct
         | Some (_ :: (_ :: _ as data)) -> Some data
         | Some [ _ ] | Some [] | None -> None
       in
-      create ~keychainable ~datum ~tries:(tries trie))
+      create ~datum ~tries:(tries trie))
   ;;
 
   let of_alist_result ~keychainable alist =
@@ -396,7 +390,7 @@ module Node = struct
       Map.Using_comparator.Tree.mapi (tries t) ~f:(fun ~key ~data:trie ->
         filter_mapi_at ~keychainable trie ~f ~rev_keys:(key :: rev_keys))
     in
-    create ~keychainable ~datum ~tries
+    create ~datum ~tries
   ;;
 
   let filter_mapi ~keychainable t ~f =
@@ -421,20 +415,16 @@ module Node = struct
   ;;
 
   (* We don't use [filter_mapi] here; we don't want to allocate key lists. *)
-  let rec filter_map ~keychainable t ~f =
+  let rec filter_map t ~f =
     let datum = Option.bind (datum t) ~f in
     let tries =
-      Map.Using_comparator.Tree.map (tries t) ~f:(fun trie ->
-        filter_map ~keychainable trie ~f)
+      Map.Using_comparator.Tree.map (tries t) ~f:(fun trie -> filter_map trie ~f)
     in
-    create ~keychainable ~datum ~tries
+    create ~datum ~tries
   ;;
 
-  let filter ~keychainable t ~f =
-    filter_map ~keychainable t ~f:(fun data -> if f data then Some data else None)
-  ;;
-
-  let map ~keychainable t ~f = filter_map ~keychainable t ~f:(fun data -> Some (f data))
+  let filter t ~f = filter_map t ~f:(fun data -> if f data then Some data else None)
+  let map t ~f = filter_map t ~f:(fun data -> Some (f data))
 
   let rec foldi_at ~keychainable t ~init ~f ~rev_keys =
     Map.Using_comparator.Tree.fold
@@ -565,7 +555,7 @@ module Node = struct
                  ~combine
                  ~rev_keys:(key :: rev_keys)))
     in
-    create ~keychainable ~datum ~tries
+    create ~datum ~tries
   ;;
 
   let merge_skewed ~keychainable trie1 trie2 ~combine =
@@ -609,7 +599,7 @@ module Node = struct
           in
           Some trie)
     in
-    create ~keychainable ~datum ~tries
+    create ~datum ~tries
   ;;
 
   let merge ~keychainable trie1 trie2 ~f =
@@ -706,7 +696,6 @@ let of_sequence_multi keychainable sequence =
 
 let create keychainable ~datum ~tries =
   Node.create
-    ~keychainable
     ~datum
     ~tries:(tries |> Map.Using_comparator.to_tree |> Map.Using_comparator.Tree.map ~f:root)
   |> make ~keychainable
@@ -841,19 +830,16 @@ let iter_keychains t ~f = Node.iter_keychains ~keychainable:(keychainable t) (ro
 let iteri t ~f = Node.iteri ~keychainable:(keychainable t) (root t) ~f
 let fold t ~init ~f = Node.fold (root t) ~init ~f
 let foldi t ~init ~f = Node.foldi ~keychainable:(keychainable t) (root t) ~init ~f
-let map t ~f = Node.map ~keychainable:(keychainable t) (root t) ~f |> like_poly t
+let map t ~f = Node.map (root t) ~f |> like_poly t
 let mapi t ~f = Node.mapi ~keychainable:(keychainable t) (root t) ~f |> like_poly t
-let filter t ~f = Node.filter ~keychainable:(keychainable t) (root t) ~f |> like t
+let filter t ~f = Node.filter (root t) ~f |> like t
 
 let filter_keychains t ~f =
   Node.filter_keychains ~keychainable:(keychainable t) (root t) ~f |> like t
 ;;
 
 let filteri t ~f = Node.filteri ~keychainable:(keychainable t) (root t) ~f |> like t
-
-let filter_map t ~f =
-  Node.filter_map ~keychainable:(keychainable t) (root t) ~f |> like_poly t
-;;
+let filter_map t ~f = Node.filter_map (root t) ~f |> like_poly t
 
 let filter_mapi t ~f =
   Node.filter_mapi ~keychainable:(keychainable t) (root t) ~f |> like_poly t
