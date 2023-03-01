@@ -39,7 +39,7 @@ struct
         let of_binable = of_alist
 
         let caller_identity =
-          Bin_shape_lib.Bin_shape.Uuid.of_string "ce72f8fc-7f27-4a96-be76-5ce83184d82f"
+          Bin_shape.Uuid.of_string "ce72f8fc-7f27-4a96-be76-5ce83184d82f"
         ;;
       end)
 

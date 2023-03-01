@@ -33,11 +33,12 @@ let or_keychain_error ~keychainable result ~message =
 ;;
 
 module Node0 : sig
-  type ('chain, 'data, 'desc) t constraint 'desc = _ * _ * _ * _ * _
+  type ('chain, +'data, 'desc) t constraint 'desc = _ * _ * _ * _ * _
 
   val empty : (_, _, _) t
   val is_empty : _ t -> bool
   val datum : (_, 'data, _) t -> 'data option
+  val num_children : _ t -> int
 
   val tries
     :  ('chain, 'data, (_ * 'key * 'cmp * _ * _ as 'desc)) t
@@ -83,6 +84,8 @@ end = struct
     in
     { datum; tries }
   ;;
+
+  let num_children t = Map.Using_comparator.Tree.length t.tries
 
   let invariant_context ~keychainable ~rev_keys =
     let keychain = Keychainable.keychain_of_rev_keys keychainable rev_keys in
@@ -140,14 +143,20 @@ module Node = struct
     and lazy_compare_trie =
       (* use laziness to avoid calling the [Comparable.*] functions more than once *)
       lazy
-        (Comparable.lexicographic
-           [ Comparable.lift ~f:datum (Option.compare compare_data)
-           ; Comparable.lift
-               ~f:tries
-               (Map.Using_comparator.Tree.compare_direct
-                  ~comparator:(Keychainable.comparator keychainable)
-                  compare_trie)
-           ])
+        (fun a_1 b_1 ->
+           Comparable.lexicographic
+             [ (fun a b -> Comparable.lift ~f:datum (Option.compare compare_data) a b)
+             ; (fun a b ->
+                  Comparable.lift
+                    ~f:tries
+                    (Map.Using_comparator.Tree.compare_direct
+                       ~comparator:(Keychainable.comparator keychainable)
+                       compare_trie)
+                    a
+                    b)
+             ]
+             a_1
+             b_1)
     in
     compare_trie
   ;;
@@ -821,6 +830,7 @@ let invariant chain_invariant data_invariant t =
 ;;
 
 let length t = Node.length (root t)
+let num_children t = Node.num_children (root t)
 let keychains t = Node.keychains ~keychainable:(keychainable t) (root t)
 let data t = Node.data (root t)
 let to_alist t = Node.to_alist ~keychainable:(keychainable t) (root t)

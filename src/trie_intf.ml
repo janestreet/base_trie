@@ -11,7 +11,7 @@ open! Base
 (** The interface of tries sharing a keychain implementation. *)
 module type S = sig
   (** The type of generic tries. See [t] in [Trie], below. *)
-  type ('chain, 'data, 'desc) trie constraint 'desc = _ * _ * _ * _ * _
+  type ('chain, +'data, 'desc) trie constraint 'desc = _ * _ * _ * _ * _
 
   module Keychain : Keychainable.S
 
@@ -28,7 +28,7 @@ module type Trie = sig
 
       We derive only [sexp_of] for this type. For stable and round-trippable
       serializations, see [Trie_stable]. *)
-  type ('chain, 'data, 'desc) t constraint 'desc = _ * _ * _ * _ * _ [@@deriving sexp_of]
+  type ('chain, +'data, 'desc) t constraint 'desc = _ * _ * _ * _ * _ [@@deriving sexp_of]
 
   module type S = S with type ('chain, 'data, 'desc) trie := ('chain, 'data, 'desc) t
 
@@ -107,6 +107,9 @@ module type Trie = sig
 
   val is_empty : _ t -> bool
   val length : _ t -> int
+
+  (** Faster version of [t |> tries |> Map.length]. *)
+  val num_children : _ t -> int
 
   (** Key metadata accessors *)
 

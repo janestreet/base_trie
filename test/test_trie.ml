@@ -781,6 +781,31 @@ let%test_module "Trie" =
             ((2 3 4) "hello, world")))) |}]
      ;;
 
+     let num_children = Trie.num_children
+
+     let%expect_test "num_children" =
+       let test trie =
+         let num_children = num_children trie in
+         print_s [%sexp { num_children : int; trie : data T.t }];
+         require_equal
+           [%here]
+           (module Int)
+           num_children
+           (Map.length (tries trie))
+       in
+       List.iter example_tries ~f:test;
+       [%expect
+         {|
+         ((num_children 0) (trie ()))
+         ((num_children 0) (trie ((() greetings))))
+         ((num_children 2) (trie (((1) yo) ((2 3) hello))))
+         ((num_children 2)
+          (trie (
+            ((1) hi)
+            ((2) hello)
+            ((2 3 4) "hello, world")))) |}]
+     ;;
+
      let find_child = Trie.find_child
 
      let%expect_test "find_child" =
