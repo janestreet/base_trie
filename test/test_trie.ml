@@ -629,11 +629,7 @@ let%test_module "Trie" =
              (List.cartesian_product tries tries)
              ~f:(fun ((trie1, trie2) as pair) ->
                let c = compare compare_data trie1 trie2 in
-               if c < 0
-               then `Fst pair
-               else if c = 0
-               then `Snd pair
-               else `Trd pair)
+               if c < 0 then `Fst pair else if c = 0 then `Snd pair else `Trd pair)
          in
          print_s
            [%sexp
@@ -1618,10 +1614,7 @@ let%test_module "Trie" =
        let test keychain =
          let trie =
            Or_error.try_with (fun () ->
-             add_trie_exn
-               large_example_trie
-               ~keychain
-               ~trie:small_example_trie)
+             add_trie_exn large_example_trie ~keychain ~trie:small_example_trie)
          in
          print_s [%sexp { keychain : keychain; trie : data T.t Or_error.t }]
        in
