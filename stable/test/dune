@@ -1,3 +1,3 @@
-(library (name trie_stable_test) (public_name trie.trie_stable_test)
+(library (name trie_stable_test) (public_name base_trie.trie_stable_test)
  (libraries core expect_test_helpers_core trie trie_stable)
  (preprocess (pps ppx_jane)))
