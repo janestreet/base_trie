@@ -67,7 +67,7 @@ end = struct
           Map.Using_comparator.Tree.t
     }
     constraint 'desc = 'wit * 'key * 'cmp * 'iter * 'idx
-  [@@deriving fields]
+  [@@deriving fields ~getters]
 
   let is_empty { datum; tries } =
     Option.is_none datum && Map.Using_comparator.Tree.is_empty tries
@@ -645,7 +645,7 @@ type ('chain, 'data, 'desc) t =
   { keychainable : ('chain, 'desc) Keychainable.t
   ; root : ('chain, 'data, 'desc) Node.t
   }
-[@@deriving fields]
+[@@deriving fields ~getters]
 
 let sexp_of_keychain t = Keychainable.sexp_of_keychain (keychainable t)
 let sexp_of_key t = Keychainable.sexp_of_key (keychainable t)
