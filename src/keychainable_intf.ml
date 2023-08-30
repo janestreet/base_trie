@@ -70,12 +70,12 @@ module type Keychainable = sig
   type ('chain, 'desc) t =
     private
     (module Impl
-      with type t = 'chain
-       and type Key.t = 'key
-       and type Key.comparator_witness = 'cmp
-       and type Iterator.t = 'iter
-       and type Iterator.iterator_witness = 'idx
-       and type keychain_witness = 'wit)
+       with type t = 'chain
+        and type Key.t = 'key
+        and type Key.comparator_witness = 'cmp
+        and type Iterator.t = 'iter
+        and type Iterator.iterator_witness = 'idx
+        and type keychain_witness = 'wit)
     constraint 'desc = 'wit * 'key * 'cmp * 'iter * 'idx
 
   module type S = S with type ('chain, 'desc) keychainable := ('chain, 'desc) t
@@ -98,10 +98,10 @@ module type Keychainable = sig
   val iterator_m
     :  ('chain, _ * 'key * _ * 'iter * 'idx) t
     -> (module Iterator.S0
-         with type t = 'iter
-          and type seq = 'chain
-          and type elt = 'key
-          and type iterator_witness = 'idx)
+          with type t = 'iter
+           and type seq = 'chain
+           and type elt = 'key
+           and type iterator_witness = 'idx)
 
   val start : ('chain, _ * _ * _ * 'iter * _) t -> 'chain -> 'iter
   val is_finished : ('chain, _ * _ * _ * 'iter * _) t -> 'iter -> 'chain -> bool
@@ -112,20 +112,20 @@ module type Keychainable = sig
 
   module Make (Impl : Impl) :
     S
-    with module Key = Impl.Key
-     and module Iterator = Impl.Iterator
-     and type keychain_witness = Impl.keychain_witness
+      with module Key = Impl.Key
+       and module Iterator = Impl.Iterator
+       and type keychain_witness = Impl.keychain_witness
 
   module Of_string :
     S
-    with type Key.t = char
-     and type Key.comparator_witness = Char.comparator_witness
-     and module Iterator = Iterator.Of_string
+      with type Key.t = char
+       and type Key.comparator_witness = Char.comparator_witness
+       and module Iterator = Iterator.Of_string
 
   module Of_list (Key : Comparator.S) :
     S
-    with module Key = Key
-     and module Iterator = Iterator.Monomorphic(Iterator.Of_list)(Key)
+      with module Key = Key
+       and module Iterator = Iterator.Monomorphic(Iterator.Of_list)(Key)
 
   module Of_listable (Key : Comparator.S) (Keychain : Listable with type elt = Key.t) :
     S with module Key = Key and module Iterator = Iterator.Of_listable0(Keychain)

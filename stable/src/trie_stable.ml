@@ -1,8 +1,8 @@
 open! Core.Core_stable
 
 module V1
-    (Keychain_unstable : Trie.Keychainable.S)
-    (Keychain_stable : Stable_with_witness with type t = Keychain_unstable.t) =
+  (Keychain_unstable : Trie.Keychainable.S)
+  (Keychain_stable : Stable_with_witness with type t = Keychain_unstable.t) =
 struct
   module T = Trie.Make (Keychain_unstable)
 

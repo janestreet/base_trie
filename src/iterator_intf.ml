@@ -116,19 +116,19 @@ module type Iterator = sig
 
   module Make1 (Impl : Impl1) :
     S1
-    with type 'a t = 'a Impl.t
-     and type 'a seq = 'a Impl.seq
-     and type 'a elt = 'a Impl.elt
+      with type 'a t = 'a Impl.t
+       and type 'a seq = 'a Impl.seq
+       and type 'a elt = 'a Impl.elt
 
   module Make0 (Impl : Impl0) :
     S0 with type t = Impl.t and type seq = Impl.seq and type elt = Impl.elt
 
   module Monomorphic (Iterator : S1) (Elt : T) :
     S0
-    with type t = Elt.t Iterator.t
-     and type seq = Elt.t Iterator.seq
-     and type elt = Elt.t Iterator.elt
-     and type iterator_witness = Iterator.iterator_witness
+      with type t = Elt.t Iterator.t
+       and type seq = Elt.t Iterator.seq
+       and type elt = Elt.t Iterator.elt
+       and type iterator_witness = Iterator.iterator_witness
 
   module Of_string : S0 with type seq = string and type elt = char
   module Of_list : S1 with type 'a seq = 'a list and type 'a elt = 'a
