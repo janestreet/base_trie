@@ -1,2 +1,6 @@
-(library (name trie) (public_name base_trie) (libraries base)
- (preprocess (pps ppx_jane)))
+(library
+ (name trie)
+ (public_name base_trie)
+ (libraries base)
+ (preprocess
+  (pps ppx_jane)))
