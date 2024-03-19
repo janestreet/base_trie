@@ -157,7 +157,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test data_invariant key_invariant =
                    show_raise ~hide_positions:true (fun () ->
                      invariant data_invariant key_invariant trie)
@@ -177,7 +178,8 @@ let%test_module "Trie" =
              ("problem with trie" ((keychain (2 3 4))))))
            (((1) _)
             ((2) _)
-            ((2 3 4) _)))) |}];
+            ((2 3 4) _))))
+         |}];
                  test ignore (fun data -> assert (not (String.equal data "hello")));
                  [%expect
                    {|
@@ -191,7 +193,8 @@ let%test_module "Trie" =
              ("problem with trie" ((keychain (2))))))
            (((1) _)
             ((2) _)
-            ((2 3 4) _)))) |}]
+            ((2 3 4) _))))
+         |}]
                ;;
 
                let empty = Trie.empty
@@ -251,7 +254,8 @@ let%test_module "Trie" =
             ((1) HI)
             ((2) HELLO)
             ((2 3 4) "HELLO, WORLD")))
-          (trie (Duplicate (1)))) |}]
+          (trie (Duplicate (1))))
+         |}]
                ;;
 
                let of_alist_or_error = Trie.of_alist_or_error
@@ -289,7 +293,8 @@ let%test_module "Trie" =
             ((1) HI)
             ((2) HELLO)
             ((2 3 4) "HELLO, WORLD")))
-          (trie (Error ("Trie.of_alist_exn: duplicate keychain" ((keychain (1))))))) |}]
+          (trie (Error ("Trie.of_alist_exn: duplicate keychain" ((keychain (1)))))))
+         |}]
                ;;
 
                let of_alist_exn = Trie.of_alist_exn
@@ -329,7 +334,8 @@ let%test_module "Trie" =
             ((1) HI)
             ((2) HELLO)
             ((2 3 4) "HELLO, WORLD")))
-          (trie (Error ("Trie.of_alist_exn: duplicate keychain" ((keychain (1))))))) |}]
+          (trie (Error ("Trie.of_alist_exn: duplicate keychain" ((keychain (1)))))))
+         |}]
                ;;
 
                let of_alist_multi = Trie.of_alist_multi
@@ -373,7 +379,8 @@ let%test_module "Trie" =
           (trie (
             ((1) (hi    HI))
             ((2) (hello HELLO))
-            ((2 3 4) ("hello, world" "HELLO, WORLD"))))) |}]
+            ((2 3 4) ("hello, world" "HELLO, WORLD")))))
+         |}]
                ;;
 
                let of_sequence = Trie.of_sequence
@@ -414,7 +421,8 @@ let%test_module "Trie" =
             ((1) HI)
             ((2) HELLO)
             ((2 3 4) "HELLO, WORLD")))
-          (trie (Duplicate (1)))) |}]
+          (trie (Duplicate (1))))
+         |}]
                ;;
 
                let of_sequence_or_error = Trie.of_sequence_or_error
@@ -455,7 +463,8 @@ let%test_module "Trie" =
             ((1) HI)
             ((2) HELLO)
             ((2 3 4) "HELLO, WORLD")))
-          (trie (Error ("Trie.of_sequence_exn: duplicate keychain" ((keychain (1))))))) |}]
+          (trie (Error ("Trie.of_sequence_exn: duplicate keychain" ((keychain (1)))))))
+         |}]
                ;;
 
                let of_sequence_exn = Trie.of_sequence_exn
@@ -498,7 +507,8 @@ let%test_module "Trie" =
             ((1) HI)
             ((2) HELLO)
             ((2 3 4) "HELLO, WORLD")))
-          (trie (Error ("Trie.of_sequence_exn: duplicate keychain" ((keychain (1))))))) |}]
+          (trie (Error ("Trie.of_sequence_exn: duplicate keychain" ((keychain (1)))))))
+         |}]
                ;;
 
                let of_sequence_multi = Trie.of_sequence_multi
@@ -544,7 +554,8 @@ let%test_module "Trie" =
           (trie (
             ((1) (hi    HI))
             ((2) (hello HELLO))
-            ((2 3 4) ("hello, world" "HELLO, WORLD"))))) |}]
+            ((2 3 4) ("hello, world" "HELLO, WORLD")))))
+         |}]
                ;;
 
                let equal = Trie.equal
@@ -614,7 +625,8 @@ let%test_module "Trie" =
                ((1) hi)
                ((2) hello)
                ((2 3 4) "hello, world")))
-             (snd (((1) yo) ((2 3) hello))))))) |}]
+             (snd (((1) yo) ((2 3) hello)))))))
+         |}]
                ;;
 
                let compare = Trie.compare
@@ -692,7 +704,8 @@ let%test_module "Trie" =
                ((1) hi)
                ((2) hello)
                ((2 3 4) "hello, world")))
-             (snd ()))))) |}]
+             (snd ())))))
+         |}]
                ;;
 
                let is_empty = Trie.is_empty
@@ -712,7 +725,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let length = Trie.length
@@ -732,7 +746,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let datum = Trie.datum
@@ -753,7 +768,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let tries = Trie.tries
@@ -774,7 +790,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let num_children = Trie.num_children
@@ -799,7 +816,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let find_child = Trie.find_child
@@ -820,7 +838,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let mem = Trie.mem
@@ -832,7 +851,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let present = mem trie keychain in
                    print_s [%sexp { keychain : keychain; present : bool }]
@@ -846,7 +866,8 @@ let%test_module "Trie" =
          ((keychain (2 3)) (present false))
          ((keychain (2 3 4)) (present true))
          ((keychain (100)) (present false))
-         ((keychain (100 200)) (present false)) |}]
+         ((keychain (100 200)) (present false))
+         |}]
                ;;
 
                let find = Trie.find
@@ -858,7 +879,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let data = find trie keychain in
                    print_s [%sexp { keychain : keychain; data : data option }]
@@ -875,7 +897,8 @@ let%test_module "Trie" =
          ((keychain (2 3)) (data ()))
          ((keychain (2 3 4)) (data ("hello, world")))
          ((keychain (100)) (data ()))
-         ((keychain (100 200)) (data ())) |}]
+         ((keychain (100 200)) (data ()))
+         |}]
                ;;
 
                let find_exn = Trie.find_exn
@@ -887,7 +910,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let data = Or_error.try_with (fun () -> find_exn trie keychain) in
                    print_s [%sexp { keychain : keychain; data : data Or_error.t }]
@@ -905,7 +929,8 @@ let%test_module "Trie" =
          ((keychain (100))
           (data (Error ("Trie.find_exn: keychain not found" ((keychain (100)))))))
          ((keychain (100 200))
-          (data (Error ("Trie.find_exn: keychain not found" ((keychain (100 200))))))) |}]
+          (data (Error ("Trie.find_exn: keychain not found" ((keychain (100 200)))))))
+         |}]
                ;;
 
                let set = Trie.set
@@ -944,7 +969,8 @@ let%test_module "Trie" =
           (trie (
             ((1) yo)
             ((2   3)   hello)
-            ((100 200) salutations)))) |}]
+            ((100 200) salutations))))
+         |}]
                ;;
 
                let add = Trie.add
@@ -990,7 +1016,8 @@ let%test_module "Trie" =
             Ok (
               ((1) yo)
               ((2   3)   hello)
-              ((100 200) salutations))))) |}]
+              ((100 200) salutations)))))
+         |}]
                ;;
 
                let add_or_error = Trie.add_or_error
@@ -1037,7 +1064,8 @@ let%test_module "Trie" =
             Ok (
               ((1) yo)
               ((2   3)   hello)
-              ((100 200) salutations))))) |}]
+              ((100 200) salutations)))))
+         |}]
                ;;
 
                let add_exn = Trie.add_exn
@@ -1086,7 +1114,8 @@ let%test_module "Trie" =
             Ok (
               ((1) yo)
               ((2   3)   hello)
-              ((100 200) salutations))))) |}]
+              ((100 200) salutations)))))
+         |}]
                ;;
 
                let remove = Trie.remove
@@ -1098,7 +1127,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let trie = remove trie keychain in
                    print_s [%sexp { keychain : keychain; trie : data T.t }]
@@ -1131,7 +1161,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let change = Trie.change
@@ -1143,7 +1174,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let trie =
                      change trie keychain ~f:(function
@@ -1190,7 +1222,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")
-            ((100 200) Salutations!)))) |}]
+            ((100 200) Salutations!))))
+         |}]
                ;;
 
                let update = Trie.update
@@ -1202,7 +1235,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let trie =
                      update trie keychain ~f:(function
@@ -1252,7 +1286,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")
-            ((100 200) Salutations!)))) |}]
+            ((100 200) Salutations!))))
+         |}]
                ;;
 
                let add_multi = Trie.add_multi
@@ -1264,7 +1299,8 @@ let%test_module "Trie" =
                    {|
          (((1) (hi    HI))
           ((2) (hello HELLO))
-          ((2 3 4) ("hello, world" "HELLO, WORLD"))) |}];
+          ((2 3 4) ("hello, world" "HELLO, WORLD")))
+         |}];
                  let test keychain =
                    let trie = add_multi trie ~keychain ~data:"Salutations" in
                    print_s [%sexp { keychain : keychain; trie : data list T.t }]
@@ -1312,7 +1348,8 @@ let%test_module "Trie" =
             ((1) (hi    HI))
             ((2) (hello HELLO))
             ((2 3 4) ("hello, world" "HELLO, WORLD"))
-            ((100 200) (Salutations))))) |}]
+            ((100 200) (Salutations)))))
+         |}]
                ;;
 
                let remove_multi = Trie.remove_multi
@@ -1324,7 +1361,8 @@ let%test_module "Trie" =
                    {|
          (((1) (hi    HI))
           ((2) (hello HELLO))
-          ((2 3 4) ("hello, world" "HELLO, WORLD"))) |}];
+          ((2 3 4) ("hello, world" "HELLO, WORLD")))
+         |}];
                  let test keychain =
                    let trie = remove_multi trie keychain in
                    print_s [%sexp { keychain : keychain; trie : data list T.t }]
@@ -1368,7 +1406,8 @@ let%test_module "Trie" =
           (trie (
             ((1) (hi    HI))
             ((2) (hello HELLO))
-            ((2 3 4) ("hello, world" "HELLO, WORLD"))))) |}]
+            ((2 3 4) ("hello, world" "HELLO, WORLD")))))
+         |}]
                ;;
 
                let find_multi = Trie.find_multi
@@ -1380,7 +1419,8 @@ let%test_module "Trie" =
                    {|
          (((1) (hi    HI))
           ((2) (hello HELLO))
-          ((2 3 4) ("hello, world" "HELLO, WORLD"))) |}];
+          ((2 3 4) ("hello, world" "HELLO, WORLD")))
+         |}];
                  let test keychain =
                    let data = find_multi trie keychain in
                    print_s [%sexp { keychain : keychain; data : data list }]
@@ -1395,7 +1435,8 @@ let%test_module "Trie" =
          ((keychain (2 3)) (data ()))
          ((keychain (2 3 4)) (data ("hello, world" "HELLO, WORLD")))
          ((keychain (100)) (data ()))
-         ((keychain (100 200)) (data ())) |}]
+         ((keychain (100 200)) (data ()))
+         |}]
                ;;
 
                let mem_trie = Trie.mem_trie
@@ -1407,7 +1448,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let present = mem_trie trie keychain in
                    print_s [%sexp { keychain : keychain; present : bool }]
@@ -1421,7 +1463,8 @@ let%test_module "Trie" =
          ((keychain (2 3)) (present true))
          ((keychain (2 3 4)) (present true))
          ((keychain (100)) (present false))
-         ((keychain (100 200)) (present false)) |}]
+         ((keychain (100 200)) (present false))
+         |}]
                ;;
 
                let find_trie = Trie.find_trie
@@ -1433,7 +1476,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let trie = find_trie trie keychain in
                    print_s [%sexp { keychain : keychain; trie : data T.t }]
@@ -1451,7 +1495,8 @@ let%test_module "Trie" =
          ((keychain (2 3)) (trie (((4) "hello, world"))))
          ((keychain (2 3 4)) (trie ((() "hello, world"))))
          ((keychain (100)) (trie ()))
-         ((keychain (100 200)) (trie ())) |}]
+         ((keychain (100 200)) (trie ()))
+         |}]
                ;;
 
                let set_trie = Trie.set_trie
@@ -1462,7 +1507,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  print_s [%sexp (small_example_trie : data T.t)];
                  [%expect {| ((() greetings)) |}];
                  let test keychain =
@@ -1505,7 +1551,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")
-            ((100 200) greetings)))) |}]
+            ((100 200) greetings))))
+         |}]
                ;;
 
                let add_trie = Trie.add_trie
@@ -1516,7 +1563,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  print_s [%sexp (small_example_trie : data T.t)];
                  [%expect {| ((() greetings)) |}];
                  let test keychain =
@@ -1548,7 +1596,8 @@ let%test_module "Trie" =
               ((1) hi)
               ((2) hello)
               ((2 3 4) "hello, world")
-              ((100 200) greetings))))) |}]
+              ((100 200) greetings)))))
+         |}]
                ;;
 
                let add_trie_or_error = Trie.add_trie_or_error
@@ -1559,7 +1608,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  print_s [%sexp (small_example_trie : data T.t)];
                  [%expect {| ((() greetings)) |}];
                  let test keychain =
@@ -1597,7 +1647,8 @@ let%test_module "Trie" =
               ((1) hi)
               ((2) hello)
               ((2 3 4) "hello, world")
-              ((100 200) greetings))))) |}]
+              ((100 200) greetings)))))
+         |}]
                ;;
 
                let add_trie_exn = Trie.add_trie_exn
@@ -1608,7 +1659,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  print_s [%sexp (small_example_trie : data T.t)];
                  [%expect {| ((() greetings)) |}];
                  let test keychain =
@@ -1644,7 +1696,8 @@ let%test_module "Trie" =
               ((1) hi)
               ((2) hello)
               ((2 3 4) "hello, world")
-              ((100 200) greetings))))) |}]
+              ((100 200) greetings)))))
+         |}]
                ;;
 
                let update_trie = Trie.update_trie
@@ -1656,7 +1709,8 @@ let%test_module "Trie" =
                    {|
          (((1) hi)
           ((2) hello)
-          ((2 3 4) "hello, world")) |}];
+          ((2 3 4) "hello, world"))
+         |}];
                  let test keychain =
                    let trie =
                      update_trie trie keychain ~f:(fun trie ->
@@ -1707,7 +1761,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")
-            ((100 200) update)))) |}]
+            ((100 200) update))))
+         |}]
                ;;
 
                let keychains = Trie.keychains
@@ -1731,7 +1786,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let data = Trie.data
@@ -1752,7 +1808,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let to_alist = Trie.to_alist
@@ -1777,7 +1834,8 @@ let%test_module "Trie" =
           (alist (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let to_sequence = Trie.to_sequence
@@ -1803,7 +1861,8 @@ let%test_module "Trie" =
           (sequence (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let iter = Trie.iter
@@ -1833,7 +1892,8 @@ let%test_module "Trie" =
              ((2 3 4) "hello, world"))))
          hi
          hello
-         "hello, world" |}]
+         "hello, world"
+         |}]
                ;;
 
                let iter_keychains = Trie.iter_keychains
@@ -1864,7 +1924,8 @@ let%test_module "Trie" =
              ((2 3 4) "hello, world"))))
          (1)
          (2)
-         (2 3 4) |}]
+         (2 3 4)
+         |}]
                ;;
 
                let iteri = Trie.iteri
@@ -1895,7 +1956,8 @@ let%test_module "Trie" =
              ((2 3 4) "hello, world"))))
          ((keychain (1)) (data hi))
          ((keychain (2)) (data hello))
-         ((keychain (2 3 4)) (data "hello, world")) |}]
+         ((keychain (2 3 4)) (data "hello, world"))
+         |}]
                ;;
 
                let fold = Trie.fold
@@ -1917,7 +1979,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")))
-          (string "hello, world; hello; hi; ...")) |}]
+          (string "hello, world; hello; hi; ..."))
+         |}]
                ;;
 
                let foldi = Trie.foldi
@@ -1944,7 +2007,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")))
-          (string "2.3.4=hello, world; 2=hello; 1=hi; ...")) |}]
+          (string "2.3.4=hello, world; 2=hello; 1=hi; ..."))
+         |}]
                ;;
 
                let map = Trie.map
@@ -1969,7 +2033,8 @@ let%test_module "Trie" =
           (mapped (
             ((1) HI)
             ((2) HELLO)
-            ((2 3 4) "HELLO, WORLD")))) |}]
+            ((2 3 4) "HELLO, WORLD"))))
+         |}]
                ;;
 
                let mapi = Trie.mapi
@@ -1998,7 +2063,8 @@ let%test_module "Trie" =
           (mapped (
             ((1) "hi @ depth 1")
             ((2) "hello @ depth 1")
-            ((2 3 4) "hello, world @ depth 3")))) |}]
+            ((2 3 4) "hello, world @ depth 3"))))
+         |}]
                ;;
 
                let filter = Trie.filter
@@ -2021,7 +2087,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")))
-          (filtered (((1) hi) ((2 3 4) "hello, world")))) |}]
+          (filtered (((1) hi) ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let filter_keychains = Trie.filter_keychains
@@ -2046,7 +2113,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")))
-          (filtered ())) |}]
+          (filtered ()))
+         |}]
                ;;
 
                let filteri = Trie.filteri
@@ -2071,7 +2139,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")))
-          (filtered (((2) hello)))) |}]
+          (filtered (((2) hello))))
+         |}]
                ;;
 
                let filter_map = Trie.filter_map
@@ -2097,7 +2166,8 @@ let%test_module "Trie" =
           (filtered (
             ((1) i)
             ((2) ello)
-            ((2 3 4) "ello, world")))) |}]
+            ((2 3 4) "ello, world"))))
+         |}]
                ;;
 
                let filter_mapi = Trie.filter_mapi
@@ -2123,7 +2193,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")))
-          (filtered ())) |}]
+          (filtered ()))
+         |}]
                ;;
 
                let for_all = Trie.for_all
@@ -2145,7 +2216,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let for_alli = Trie.for_alli
@@ -2168,7 +2240,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let exists = Trie.exists
@@ -2190,7 +2263,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let existsi = Trie.existsi
@@ -2213,7 +2287,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let count = Trie.count
@@ -2235,7 +2310,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let counti = Trie.counti
@@ -2258,7 +2334,8 @@ let%test_module "Trie" =
           (trie (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let partition_tf = Trie.partition_tf
@@ -2289,7 +2366,8 @@ let%test_module "Trie" =
             ((1) hi)
             ((2) hello)
             ((2 3 4) "hello, world")))
-          (failure ())) |}]
+          (failure ()))
+         |}]
                ;;
 
                let partitioni_tf = Trie.partitioni_tf
@@ -2321,7 +2399,8 @@ let%test_module "Trie" =
           (failure (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let partition_map = Trie.partition_map
@@ -2355,7 +2434,8 @@ let%test_module "Trie" =
             ((1) i)
             ((2) ello)
             ((2 3 4) "ello, world")))
-          (failure ())) |}]
+          (failure ()))
+         |}]
                ;;
 
                let partition_mapi = Trie.partition_mapi
@@ -2389,7 +2469,8 @@ let%test_module "Trie" =
           (failure (
             ((1) hi)
             ((2) hello)
-            ((2 3 4) "hello, world")))) |}]
+            ((2 3 4) "hello, world"))))
+         |}]
                ;;
 
                let merge = Trie.merge
@@ -2534,7 +2615,8 @@ let%test_module "Trie" =
           (merged (
             ((1) ((1) (Both (hi hi))))
             ((2) ((2) (Both (hello hello))))
-            ((2 3 4) ((2 3 4) (Both ("hello, world" "hello, world"))))))) |}]
+            ((2 3 4) ((2 3 4) (Both ("hello, world" "hello, world")))))))
+         |}]
                ;;
 
                let merge_skewed = Trie.merge_skewed
@@ -2645,7 +2727,8 @@ let%test_module "Trie" =
           (merged (
             ((1) "hi; hi")
             ((2) "hello; hello")
-            ((2 3 4) "hello, world; hello, world")))) |}]
+            ((2 3 4) "hello, world; hello, world"))))
+         |}]
                ;;
              end :
                module type of struct
