@@ -340,7 +340,7 @@ module type Trie = sig
   module Of_list (Key : Comparator.S) : S with module Keychain = Keychainable.Of_list(Key)
 
   module Of_listable
-    (Key : Comparator.S)
-    (Keychain : Keychainable.Listable with type elt = Key.t) :
+      (Key : Comparator.S)
+      (Keychain : Keychainable.Listable with type elt = Key.t) :
     S with module Keychain = Keychainable.Of_listable(Key)(Keychain)
 end

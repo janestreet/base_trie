@@ -112,20 +112,20 @@ module type Keychainable = sig
 
   module Make (Impl : Impl) :
     S
-      with module Key = Impl.Key
-       and module Iterator = Impl.Iterator
-       and type keychain_witness = Impl.keychain_witness
+    with module Key = Impl.Key
+     and module Iterator = Impl.Iterator
+     and type keychain_witness = Impl.keychain_witness
 
   module Of_string :
     S
-      with type Key.t = char
-       and type Key.comparator_witness = Char.comparator_witness
-       and module Iterator = Iterator.Of_string
+    with type Key.t = char
+     and type Key.comparator_witness = Char.comparator_witness
+     and module Iterator = Iterator.Of_string
 
   module Of_list (Key : Comparator.S) :
     S
-      with module Key = Key
-       and module Iterator = Iterator.Monomorphic(Iterator.Of_list)(Key)
+    with module Key = Key
+     and module Iterator = Iterator.Monomorphic(Iterator.Of_list)(Key)
 
   module Of_listable (Key : Comparator.S) (Keychain : Listable with type elt = Key.t) :
     S with module Key = Key and module Iterator = Iterator.Of_listable0(Keychain)

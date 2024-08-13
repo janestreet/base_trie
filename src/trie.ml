@@ -62,9 +62,9 @@ end = struct
     { datum : 'data option
     ; tries :
         ( 'key
-        , ('chain, 'data, 'wit * 'key * 'cmp * 'iter * 'idx) t
-        , 'cmp )
-        Map.Using_comparator.Tree.t
+          , ('chain, 'data, 'wit * 'key * 'cmp * 'iter * 'idx) t
+          , 'cmp )
+          Map.Using_comparator.Tree.t
     }
     constraint 'desc = 'wit * 'key * 'cmp * 'iter * 'idx
   [@@deriving fields ~getters]
@@ -553,16 +553,16 @@ module Node = struct
         (tries trie1)
         (tries trie2)
         ~f:(fun ~key variant ->
-        match variant with
-        | `Left trie | `Right trie -> Some trie
-        | `Both (trie1, trie2) ->
-          Some
-            (merge_skewed_at
-               ~keychainable
-               trie1
-               trie2
-               ~combine
-               ~rev_keys:(key :: rev_keys)))
+          match variant with
+          | `Left trie | `Right trie -> Some trie
+          | `Both (trie1, trie2) ->
+            Some
+              (merge_skewed_at
+                 ~keychainable
+                 trie1
+                 trie2
+                 ~combine
+                 ~rev_keys:(key :: rev_keys)))
     in
     create ~datum ~tries
   ;;
@@ -592,21 +592,21 @@ module Node = struct
         (tries trie1)
         (tries trie2)
         ~f:(fun ~key variant ->
-        let rev_keys = key :: rev_keys in
-        let trie =
-          (* By re-bindings [rev_keys] at each clause, we cannot forget to re-add them to
+          let rev_keys = key :: rev_keys in
+          let trie =
+            (* By re-bindings [rev_keys] at each clause, we cannot forget to re-add them to
                the list of keychain when recurring. *)
-          match rev_keys, variant with
-          | rev_keys, `Both (trie1, trie2) ->
-            merge_at ~keychainable trie1 trie2 ~f ~rev_keys
-          | rev_keys, `Left trie1 ->
-            filter_mapi_at ~keychainable trie1 ~rev_keys ~f:(fun ~rev_keys ~data ->
-              f ~rev_keys (`Left data))
-          | rev_keys, `Right trie2 ->
-            filter_mapi_at ~keychainable trie2 ~rev_keys ~f:(fun ~rev_keys ~data ->
-              f ~rev_keys (`Right data))
-        in
-        Some trie)
+            match rev_keys, variant with
+            | rev_keys, `Both (trie1, trie2) ->
+              merge_at ~keychainable trie1 trie2 ~f ~rev_keys
+            | rev_keys, `Left trie1 ->
+              filter_mapi_at ~keychainable trie1 ~rev_keys ~f:(fun ~rev_keys ~data ->
+                f ~rev_keys (`Left data))
+            | rev_keys, `Right trie2 ->
+              filter_mapi_at ~keychainable trie2 ~rev_keys ~f:(fun ~rev_keys ~data ->
+                f ~rev_keys (`Right data))
+          in
+          Some trie)
     in
     create ~datum ~tries
   ;;
@@ -636,8 +636,8 @@ module Node = struct
   let to_sequence ~keychainable t =
     to_sequence_at ~keychainable t ~rev_keys:[]
     |> Sequence.map ~f:(fun (rev_keys, data) ->
-         let keychain = Keychainable.keychain_of_rev_keys keychainable rev_keys in
-         keychain, data)
+      let keychain = Keychainable.keychain_of_rev_keys keychainable rev_keys in
+      keychain, data)
   ;;
 end
 
@@ -900,6 +900,6 @@ module Of_string = Make (Keychainable.Of_string)
 module Of_list (Key : Comparator.S) = Make (Keychainable.Of_list (Key))
 
 module Of_listable
-  (Key : Comparator.S)
-  (Keychain : Keychainable.Listable with type elt = Key.t) =
+    (Key : Comparator.S)
+    (Keychain : Keychainable.Listable with type elt = Key.t) =
   Make (Keychainable.Of_listable (Key) (Keychain))

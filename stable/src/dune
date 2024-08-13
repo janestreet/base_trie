@@ -1,6 +1,6 @@
 (library
  (name trie_stable)
  (public_name base_trie.trie_stable)
- (libraries core trie)
+ (libraries bin_prot.shape core ppx_stable_witness.stable_witness trie)
  (preprocess
   (pps ppx_jane)))

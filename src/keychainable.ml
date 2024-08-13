@@ -68,9 +68,9 @@ let next_exn t = Iterator.next_exn (iterator t)
 
 module Make (Impl : Impl) :
   S
-    with module Key = Impl.Key
-     and module Iterator = Impl.Iterator
-     and type keychain_witness = Impl.keychain_witness = struct
+  with module Key = Impl.Key
+   and module Iterator = Impl.Iterator
+   and type keychain_witness = Impl.keychain_witness = struct
   let keychainable : _ t = (module Impl)
 
   include Impl
@@ -84,39 +84,39 @@ module Make (Impl : Impl) :
 end
 
 module Of_string = Make (struct
-  type keychain_witness
+    type keychain_witness
 
-  module Key = Char
+    module Key = Char
 
-  type t = string [@@deriving sexp_of]
+    type t = string [@@deriving sexp_of]
 
-  let of_rev_keys rev_keys = String.of_char_list (List.rev rev_keys)
+    let of_rev_keys rev_keys = String.of_char_list (List.rev rev_keys)
 
-  module Iterator = Iterator.Of_string
-end)
+    module Iterator = Iterator.Of_string
+  end)
 
 module Of_list (Key : Comparator.S) = Make (struct
-  type keychain_witness
+    type keychain_witness
 
-  module Key = Key
+    module Key = Key
 
-  type t = Key.t list
+    type t = Key.t list
 
-  let sexp_of_t t = sexp_of_list Key.comparator.sexp_of_t t
-  let of_rev_keys = List.rev
+    let sexp_of_t t = sexp_of_list Key.comparator.sexp_of_t t
+    let of_rev_keys = List.rev
 
-  module Iterator = Iterator.Monomorphic (Iterator.Of_list) (Key)
-end)
+    module Iterator = Iterator.Monomorphic (Iterator.Of_list) (Key)
+  end)
 
 module Of_listable (Key : Comparator.S) (Keychain : Listable with type elt = Key.t) =
 Make (struct
-  type keychain_witness
+    type keychain_witness
 
-  module Key = Key
+    module Key = Key
 
-  type t = Keychain.t [@@deriving sexp_of]
+    type t = Keychain.t [@@deriving sexp_of]
 
-  let of_rev_keys rev_keys = Keychain.of_list (List.rev rev_keys)
+    let of_rev_keys rev_keys = Keychain.of_list (List.rev rev_keys)
 
-  module Iterator = Iterator.Of_listable0 (Keychain)
-end)
+    module Iterator = Iterator.Of_listable0 (Keychain)
+  end)

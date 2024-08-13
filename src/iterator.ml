@@ -48,12 +48,12 @@ end
 
 module Make0 (Impl : Impl0) = struct
   include Make1 (struct
-    include Impl
+      include Impl
 
-    type _ seq = Impl.seq
-    type _ elt = Impl.elt
-    type _ t = Impl.t
-  end)
+      type _ seq = Impl.seq
+      type _ elt = Impl.elt
+      type _ t = Impl.t
+    end)
 
   include Impl
 end
@@ -67,34 +67,34 @@ module Monomorphic (Iterator : S1) (Elt : T) = struct
 end
 
 module Of_string = Make0 (struct
-  type seq = string
-  type elt = char
-  type t = int
+    type seq = string
+    type elt = char
+    type t = int
 
-  let start _ = 0
-  let is_finished pos string = pos >= String.length string
-  let get_exn pos string = string.[pos]
-  let next_exn pos _ = pos + 1
-end)
+    let start _ = 0
+    let is_finished pos string = pos >= String.length string
+    let get_exn pos string = string.[pos]
+    let next_exn pos _ = pos + 1
+  end)
 
 module Of_listable1 (Seq : Listable1) = Make1 (struct
-  type 'a seq = 'a Seq.t
-  type 'a elt = 'a Seq.elt
-  type 'a t = 'a elt list
+    type 'a seq = 'a Seq.t
+    type 'a elt = 'a Seq.elt
+    type 'a t = 'a elt list
 
-  let start seq = Seq.to_list seq
-  let is_finished list _ = List.is_empty list
-  let get_exn list _ = List.hd_exn list
-  let next_exn list _ = List.tl_exn list
-end)
+    let start seq = Seq.to_list seq
+    let is_finished list _ = List.is_empty list
+    let get_exn list _ = List.hd_exn list
+    let next_exn list _ = List.tl_exn list
+  end)
 
 module Of_listable0 (Seq : Listable0) = struct
   include Of_listable1 (struct
-    include Seq
+      include Seq
 
-    type _ t = Seq.t
-    type _ elt = Seq.elt
-  end)
+      type _ t = Seq.t
+      type _ elt = Seq.elt
+    end)
 
   type seq = Seq.t
   type elt = Seq.elt
@@ -102,7 +102,7 @@ module Of_listable0 (Seq : Listable0) = struct
 end
 
 module Of_list = Of_listable1 (struct
-  include List
+    include List
 
-  type 'a elt = 'a
-end)
+    type 'a elt = 'a
+  end)
