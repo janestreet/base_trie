@@ -199,8 +199,10 @@ module type Trie = sig
       element's key. *)
   val mem_trie : ('chain, 'data, 'desc) t -> 'chain -> bool
 
-  (** Produces the trie at the given position. If [not (mem_trie t keychain)]], returns an
-      empty trie. *)
+  (** {v
+ Produces the trie at the given position. If [not (mem_trie t keychain)]], returns an
+      empty trie.
+      v} *)
   val find_trie : ('chain, 'data, 'desc) t -> 'chain -> ('chain, 'data, 'desc) t
 
   (** Replaces the trie node at the given position, if any, with the given trie. *)

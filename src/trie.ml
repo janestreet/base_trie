@@ -98,7 +98,6 @@ end = struct
        message. We exit that context before checking children so we don't wind up with
        many layers of nesting. *)
     Invariant.invariant
-      [%here]
       rev_keys
       (fun rev_keys -> invariant_context ~keychainable ~rev_keys)
       (fun () ->
@@ -121,7 +120,7 @@ end = struct
   ;;
 
   let invariant ~keychainable chain_invariant data_invariant t ~sexp_of_t =
-    Invariant.invariant [%here] t sexp_of_t (fun () ->
+    Invariant.invariant t sexp_of_t (fun () ->
       invariant_at ~keychainable chain_invariant data_invariant t ~rev_keys:[])
   ;;
 end
