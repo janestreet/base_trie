@@ -27,7 +27,7 @@ let comparator
   Chain.Key.comparator
 ;;
 
-let sexp_of_key t = (comparator t).sexp_of_t
+let sexp_of_key t = Comparator.sexp_of_t (comparator t)
 
 let sexp_of_keychain
   (type chain wit key cmp iter idx)
@@ -102,7 +102,7 @@ module Of_list (Key : Comparator.S) = Make (struct
 
     type t = Key.t list
 
-    let sexp_of_t t = sexp_of_list Key.comparator.sexp_of_t t
+    let sexp_of_t t = sexp_of_list (Comparator.sexp_of_t Key.comparator) t
     let of_rev_keys = List.rev
 
     module Iterator = Iterator.Monomorphic (Iterator.Of_list) (Key)
