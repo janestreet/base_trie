@@ -22,7 +22,7 @@ module Examples = struct
 
   type keychain = int list [@@deriving compare, sexp_of]
   type key = int [@@deriving compare, sexp_of]
-  type data = string [@@deriving compare, equal, sexp_of]
+  type data = string [@@deriving compare ~localize, equal ~localize, sexp_of]
 
   (* We simulate alist constructors here so that Trie constructors, other than the
      primitive [Trie.create], are not used to test themselves. *)
@@ -537,14 +537,17 @@ end = struct
       |}]
   ;;
 
-  let equal = Trie.equal
+  [%%template
+  [@@@mode.default m = (local, global)]
+
+  let equal = (Trie.equal [@mode m])
 
   let%expect_test "equal" =
     let sexp_of_pair (fst, snd) = [%sexp { fst : data T.t; snd : data T.t }] in
     let test tries =
       let equal, different =
         List.partition_tf (List.cartesian_product tries tries) ~f:(fun (trie1, trie2) ->
-          equal equal_data trie1 trie2)
+          (equal [@mode m]) (equal_data [@mode m]) trie1 trie2)
       in
       print_s [%sexp { equal : pair list; different : pair list }]
     in
@@ -605,7 +608,7 @@ end = struct
       |}]
   ;;
 
-  let compare = Trie.compare
+  let compare = (Trie.compare [@mode m])
 
   let%expect_test "compare" =
     let sexp_of_pair (fst, snd) = [%sexp { fst : data T.t; snd : data T.t }] in
@@ -614,7 +617,7 @@ end = struct
         List.partition3_map
           (List.cartesian_product tries tries)
           ~f:(fun ((trie1, trie2) as pair) ->
-            let c = compare compare_data trie1 trie2 in
+            let c = (compare [@mode m]) (compare_data [@mode m]) trie1 trie2 in
             if c < 0 then `Fst pair else if c = 0 then `Snd pair else `Trd pair)
       in
       print_s
@@ -676,7 +679,7 @@ end = struct
             ((2 3 4) "hello, world")))
           (snd ())))))
       |}]
-  ;;
+  ;;]
 
   let is_empty = Trie.is_empty
 

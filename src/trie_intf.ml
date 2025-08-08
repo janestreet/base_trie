@@ -119,6 +119,9 @@ module type Trie = sig
 
   (** Comparisons *)
 
+  [%%template:
+  [@@@mode.default m = (global, local)]
+
   val compare
     :  ('data -> 'data -> int)
     -> ('chain, 'data, 'desc) t
@@ -129,7 +132,7 @@ module type Trie = sig
     :  ('data -> 'data -> bool)
     -> ('chain, 'data, 'desc) t
     -> ('chain, 'data, 'desc) t
-    -> bool
+    -> bool]
 
   (** Serialization *)
 
