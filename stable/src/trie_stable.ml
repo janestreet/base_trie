@@ -8,7 +8,7 @@ struct
 
   type 'a t = 'a T.t
 
-  let compare = Trie.compare
+  let%template compare = (Trie.compare [@mode m]) [@@mode m = (global, local)]
   let map = Trie.map
 
   module Alist_stable = struct

@@ -119,17 +119,20 @@ module type Trie = sig
 
   (** Comparisons *)
 
+  [%%template:
+  [@@@mode.default m = (global, local)]
+
   val compare
-    :  ('data -> 'data -> int)
-    -> ('chain, 'data, 'desc) t
-    -> ('chain, 'data, 'desc) t
+    :  ('data @ m -> 'data @ m -> int)
+    -> ('chain, 'data, 'desc) t @ m
+    -> ('chain, 'data, 'desc) t @ m
     -> int
 
   val equal
-    :  ('data -> 'data -> bool)
-    -> ('chain, 'data, 'desc) t
-    -> ('chain, 'data, 'desc) t
-    -> bool
+    :  ('data @ m -> 'data @ m -> bool)
+    -> ('chain, 'data, 'desc) t @ m
+    -> ('chain, 'data, 'desc) t @ m
+    -> bool]
 
   (** Serialization *)
 
@@ -265,6 +268,14 @@ module type Trie = sig
     :  ('chain, 'data, 'desc) t
     -> init:'acc
     -> f:('acc -> keychain:'chain -> data:'data -> 'acc)
+    -> 'acc
+
+  (** Calls [f] with [t], plus recursively on descendent [trie]s of [t] where
+      [not (is_empty trie)]. Passes [keychain] where [find_trie t keychain = trie]. *)
+  val foldi_tries
+    :  ('chain, 'data, 'desc) t
+    -> init:'acc
+    -> f:('acc -> keychain:'chain -> trie:('chain, 'data, 'desc) t -> 'acc)
     -> 'acc
 
   val map : ('chain, 'a, 'desc) t -> f:('a -> 'b) -> ('chain, 'b, 'desc) t

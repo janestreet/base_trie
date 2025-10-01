@@ -22,7 +22,7 @@ module Examples = struct
 
   type keychain = int list [@@deriving compare, sexp_of]
   type key = int [@@deriving compare, sexp_of]
-  type data = string [@@deriving compare, equal, sexp_of]
+  type data = string [@@deriving compare ~localize, equal ~localize, sexp_of]
 
   (* We simulate alist constructors here so that Trie constructors, other than the
      primitive [Trie.create], are not used to test themselves. *)
@@ -537,14 +537,17 @@ end = struct
       |}]
   ;;
 
-  let equal = Trie.equal
+  [%%template
+  [@@@mode.default m = (local, global)]
+
+  let equal = (Trie.equal [@mode m])
 
   let%expect_test "equal" =
     let sexp_of_pair (fst, snd) = [%sexp { fst : data T.t; snd : data T.t }] in
     let test tries =
       let equal, different =
         List.partition_tf (List.cartesian_product tries tries) ~f:(fun (trie1, trie2) ->
-          equal equal_data trie1 trie2)
+          (equal [@mode m]) (equal_data [@mode m]) trie1 trie2)
       in
       print_s [%sexp { equal : pair list; different : pair list }]
     in
@@ -605,7 +608,7 @@ end = struct
       |}]
   ;;
 
-  let compare = Trie.compare
+  let compare = (Trie.compare [@mode m])
 
   let%expect_test "compare" =
     let sexp_of_pair (fst, snd) = [%sexp { fst : data T.t; snd : data T.t }] in
@@ -614,7 +617,7 @@ end = struct
         List.partition3_map
           (List.cartesian_product tries tries)
           ~f:(fun ((trie1, trie2) as pair) ->
-            let c = compare compare_data trie1 trie2 in
+            let c = (compare [@mode m]) (compare_data [@mode m]) trie1 trie2 in
             if c < 0 then `Fst pair else if c = 0 then `Snd pair else `Trd pair)
       in
       print_s
@@ -676,7 +679,7 @@ end = struct
             ((2 3 4) "hello, world")))
           (snd ())))))
       |}]
-  ;;
+  ;;]
 
   let is_empty = Trie.is_empty
 
@@ -1948,6 +1951,45 @@ end = struct
          ((2) hello)
          ((2 3 4) "hello, world")))
        (string "2.3.4=hello, world; 2=hello; 1=hi; ..."))
+      |}]
+  ;;
+
+  let foldi_tries = Trie.foldi_tries
+
+  let%expect_test "foldi_tries" =
+    let test trie =
+      let alist =
+        foldi_tries trie ~init:[] ~f:(fun acc ~keychain ~trie -> (keychain, trie) :: acc)
+      in
+      print_s [%sexp { trie : data T.t; alist : (keychain * data T.t) list }]
+    in
+    List.iter example_tries ~f:test;
+    [%expect
+      {|
+      ((trie ())
+       (alist ((
+         ()
+         ()))))
+      ((trie ((() greetings))) (alist ((() ((() greetings))))))
+      ((trie (((1) yo) ((2 3) hello)))
+       (alist (
+         ((2 3) ((() hello)))
+         ((2) (((3) hello)))
+         ((1) ((() yo)))
+         (() (((1) yo) ((2 3) hello))))))
+      ((trie (
+         ((1) hi)
+         ((2) hello)
+         ((2 3 4) "hello, world")))
+       (alist (
+         ((2 3 4) ((() "hello, world")))
+         ((2 3) (((4) "hello, world")))
+         ((2) ((() hello) ((3 4) "hello, world")))
+         ((1) ((() hi)))
+         (()
+          (((1) hi)
+           ((2) hello)
+           ((2 3 4) "hello, world"))))))
       |}]
   ;;
 

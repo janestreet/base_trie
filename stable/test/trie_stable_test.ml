@@ -22,7 +22,7 @@ module _ : module type of Trie_stable = struct
       ]
       |> List.map ~f:(Trie.of_alist_exn Trie.Keychainable.Of_string.keychainable)
     in
-    Ref.set_temporarily sexp_style Sexp_style.To_string_hum ~f:(fun () ->
+    Dynamic.with_temporarily sexp_style Sexp_style.To_string_hum ~f:(fun () ->
       print_and_check_stable_type (module T0) examples);
     [%expect
       {|

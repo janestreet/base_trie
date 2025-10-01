@@ -37,12 +37,16 @@ module Node0 : sig
 
   val empty : (_, _, _) t
   val is_empty : _ t -> bool
-  val datum : (_, 'data, _) t -> 'data option
+
+  val%template datum : (_, 'data, _) t @ m -> 'data option @ m
+  [@@mode m = (global, local)]
+
   val num_children : _ t -> int
 
-  val tries
-    :  ('chain, 'data, (_ * 'key * 'cmp * _ * _ as 'desc)) t
-    -> ('key, ('chain, 'data, 'desc) t, 'cmp) Map.Using_comparator.Tree.t
+  val%template tries
+    :  ('chain, 'data, (_ * 'key * 'cmp * _ * _ as 'desc)) t @ m
+    -> ('key, ('chain, 'data, 'desc) t, 'cmp) Map.Using_comparator.Tree.t @ m
+  [@@mode m = (global, local)]
 
   val create
     :  datum:'data option
@@ -67,7 +71,7 @@ end = struct
           Map.Using_comparator.Tree.t
     }
     constraint 'desc = 'wit * 'key * 'cmp * 'iter * 'idx
-  [@@deriving fields ~getters]
+  [@@deriving fields ~getters ~local_getters]
 
   let is_empty { datum; tries } =
     Option.is_none datum && Map.Using_comparator.Tree.is_empty tries
@@ -128,13 +132,19 @@ end
 module Node = struct
   include Node0
 
+  [%%template
+  [@@@mode.default m = (global, local)]
+
   let rec equal ~keychainable equal_data trie1 trie2 =
-    Option.equal equal_data (datum trie1) (datum trie2)
-    && Map.Using_comparator.Tree.equal
-         ~comparator:(Keychainable.comparator keychainable)
-         (equal ~keychainable equal_data)
-         (tries trie1)
-         (tries trie2)
+    (Option.equal [@mode m])
+      equal_data
+      ((datum [@mode m]) trie1)
+      ((datum [@mode m]) trie2)
+    && ((Map.Using_comparator.Tree.equal [@mode m])
+          ~comparator:(Keychainable.comparator keychainable)
+          ((equal [@mode m]) ~keychainable equal_data)
+          ((tries [@mode m]) trie1)
+          ((tries [@mode m]) trie2) [@nontail])
   ;;
 
   let compare ~keychainable compare_data =
@@ -143,12 +153,17 @@ module Node = struct
       (* use laziness to avoid calling the [Comparable.*] functions more than once *)
       lazy
         (fun a_1 b_1 ->
-          Comparable.lexicographic
-            [ (fun a b -> Comparable.lift ~f:datum (Option.compare compare_data) a b)
+          (Comparable.lexicographic [@mode m])
+            [ (fun a b ->
+                (Comparable.lift [@mode m])
+                  ~f:(datum [@mode m])
+                  ((Option.compare [@mode m]) compare_data)
+                  a
+                  b)
             ; (fun a b ->
-                Comparable.lift
-                  ~f:tries
-                  (Map.Using_comparator.Tree.compare_direct
+                (Comparable.lift [@mode m])
+                  ~f:(tries [@mode m])
+                  ((Map.Using_comparator.Tree.compare_direct [@mode m])
                      ~comparator:(Keychainable.comparator keychainable)
                      compare_trie)
                   a
@@ -158,7 +173,7 @@ module Node = struct
             b_1)
     in
     compare_trie
-  ;;
+  ;;]
 
   let rec find_trie_and_call_at ~keychainable t keychain ~iter ~if_found ~if_not_found =
     if Keychainable.is_finished keychainable iter keychain
@@ -434,6 +449,22 @@ module Node = struct
   let filter t ~f = filter_map t ~f:(fun data -> if f data then Some data else None)
   let map t ~f = filter_map t ~f:(fun data -> Some (f data))
 
+  let rec foldi_nodes_at ~keychainable t ~init ~f ~rev_keys =
+    Map.Using_comparator.Tree.fold
+      (tries t)
+      ~init:(f init ~rev_keys ~node:t)
+      ~f:(fun ~key ~data:node acc ->
+        foldi_nodes_at ~keychainable node ~init:acc ~f ~rev_keys:(key :: rev_keys))
+  ;;
+
+  let foldi_nodes ~keychainable t ~init ~f =
+    let f acc ~rev_keys ~node =
+      let keychain = Keychainable.keychain_of_rev_keys keychainable rev_keys in
+      f acc ~keychain ~node
+    in
+    foldi_nodes_at ~keychainable t ~init ~f ~rev_keys:[]
+  ;;
+
   let rec foldi_at ~keychainable t ~init ~f ~rev_keys =
     Map.Using_comparator.Tree.fold
       (tries t)
@@ -641,10 +672,10 @@ module Node = struct
 end
 
 type ('chain, 'data, 'desc) t =
-  { keychainable : ('chain, 'desc) Keychainable.t
+  { keychainable : ('chain, 'desc) Keychainable.t @@ global
   ; root : ('chain, 'data, 'desc) Node.t
   }
-[@@deriving fields ~getters]
+[@@deriving fields ~getters ~local_getters]
 
 let sexp_of_keychain t = Keychainable.sexp_of_keychain (keychainable t)
 let sexp_of_key t = Keychainable.sexp_of_key (keychainable t)
@@ -727,15 +758,26 @@ let find_child t key =
 
 let is_empty t = Node.is_empty (root t)
 
+[%%template
+[@@@mode.default m = (global, local)]
+
 let compare compare_data x y =
   let keychainable = keychainable x in
-  Node.compare ~keychainable compare_data (root x) (root y)
+  (Node.compare [@mode m])
+    ~keychainable
+    compare_data
+    ((root [@mode m]) x)
+    ((root [@mode m]) y) [@nontail]
 ;;
 
 let equal equal_data x y =
   let keychainable = keychainable x in
-  Node.equal ~keychainable equal_data (root x) (root y)
-;;
+  (Node.equal [@mode m])
+    ~keychainable
+    equal_data
+    ((root [@mode m]) x)
+    ((root [@mode m]) y) [@nontail]
+;;]
 
 let mem t keychain = Node.mem ~keychainable:(keychainable t) (root t) keychain
 let find t keychain = Node.find ~keychainable:(keychainable t) (root t) keychain
@@ -839,6 +881,15 @@ let iter_keychains t ~f = Node.iter_keychains ~keychainable:(keychainable t) (ro
 let iteri t ~f = Node.iteri ~keychainable:(keychainable t) (root t) ~f
 let fold t ~init ~f = Node.fold (root t) ~init ~f
 let foldi t ~init ~f = Node.foldi ~keychainable:(keychainable t) (root t) ~init ~f
+
+let foldi_tries t ~init ~f =
+  Node.foldi_nodes
+    ~keychainable:(keychainable t)
+    (root t)
+    ~init
+    ~f:(fun acc ~keychain ~node -> f acc ~keychain ~trie:(like t node))
+;;
+
 let map t ~f = Node.map (root t) ~f |> like_poly t
 let mapi t ~f = Node.mapi ~keychainable:(keychainable t) (root t) ~f |> like_poly t
 let filter t ~f = Node.filter (root t) ~f |> like t
