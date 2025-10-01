@@ -1954,6 +1954,45 @@ end = struct
       |}]
   ;;
 
+  let foldi_tries = Trie.foldi_tries
+
+  let%expect_test "foldi_tries" =
+    let test trie =
+      let alist =
+        foldi_tries trie ~init:[] ~f:(fun acc ~keychain ~trie -> (keychain, trie) :: acc)
+      in
+      print_s [%sexp { trie : data T.t; alist : (keychain * data T.t) list }]
+    in
+    List.iter example_tries ~f:test;
+    [%expect
+      {|
+      ((trie ())
+       (alist ((
+         ()
+         ()))))
+      ((trie ((() greetings))) (alist ((() ((() greetings))))))
+      ((trie (((1) yo) ((2 3) hello)))
+       (alist (
+         ((2 3) ((() hello)))
+         ((2) (((3) hello)))
+         ((1) ((() yo)))
+         (() (((1) yo) ((2 3) hello))))))
+      ((trie (
+         ((1) hi)
+         ((2) hello)
+         ((2 3 4) "hello, world")))
+       (alist (
+         ((2 3 4) ((() "hello, world")))
+         ((2 3) (((4) "hello, world")))
+         ((2) ((() hello) ((3 4) "hello, world")))
+         ((1) ((() hi)))
+         (()
+          (((1) hi)
+           ((2) hello)
+           ((2 3 4) "hello, world"))))))
+      |}]
+  ;;
+
   let map = Trie.map
 
   let%expect_test "map" =

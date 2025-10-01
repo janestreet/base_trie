@@ -270,6 +270,14 @@ module type Trie = sig
     -> f:('acc -> keychain:'chain -> data:'data -> 'acc)
     -> 'acc
 
+  (** Calls [f] with [t], plus recursively on descendent [trie]s of [t] where
+      [not (is_empty trie)]. Passes [keychain] where [find_trie t keychain = trie]. *)
+  val foldi_tries
+    :  ('chain, 'data, 'desc) t
+    -> init:'acc
+    -> f:('acc -> keychain:'chain -> trie:('chain, 'data, 'desc) t -> 'acc)
+    -> 'acc
+
   val map : ('chain, 'a, 'desc) t -> f:('a -> 'b) -> ('chain, 'b, 'desc) t
 
   val mapi

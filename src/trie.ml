@@ -448,6 +448,22 @@ module Node = struct
   let filter t ~f = filter_map t ~f:(fun data -> if f data then Some data else None)
   let map t ~f = filter_map t ~f:(fun data -> Some (f data))
 
+  let rec foldi_nodes_at ~keychainable t ~init ~f ~rev_keys =
+    Map.Using_comparator.Tree.fold
+      (tries t)
+      ~init:(f init ~rev_keys ~node:t)
+      ~f:(fun ~key ~data:node acc ->
+        foldi_nodes_at ~keychainable node ~init:acc ~f ~rev_keys:(key :: rev_keys))
+  ;;
+
+  let foldi_nodes ~keychainable t ~init ~f =
+    let f acc ~rev_keys ~node =
+      let keychain = Keychainable.keychain_of_rev_keys keychainable rev_keys in
+      f acc ~keychain ~node
+    in
+    foldi_nodes_at ~keychainable t ~init ~f ~rev_keys:[]
+  ;;
+
   let rec foldi_at ~keychainable t ~init ~f ~rev_keys =
     Map.Using_comparator.Tree.fold
       (tries t)
@@ -864,6 +880,15 @@ let iter_keychains t ~f = Node.iter_keychains ~keychainable:(keychainable t) (ro
 let iteri t ~f = Node.iteri ~keychainable:(keychainable t) (root t) ~f
 let fold t ~init ~f = Node.fold (root t) ~init ~f
 let foldi t ~init ~f = Node.foldi ~keychainable:(keychainable t) (root t) ~init ~f
+
+let foldi_tries t ~init ~f =
+  Node.foldi_nodes
+    ~keychainable:(keychainable t)
+    (root t)
+    ~init
+    ~f:(fun acc ~keychain ~node -> f acc ~keychain ~trie:(like t node))
+;;
+
 let map t ~f = Node.map (root t) ~f |> like_poly t
 let mapi t ~f = Node.mapi ~keychainable:(keychainable t) (root t) ~f |> like_poly t
 let filter t ~f = Node.filter (root t) ~f |> like t
