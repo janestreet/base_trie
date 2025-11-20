@@ -121,8 +121,8 @@ end = struct
   let sexp_of_key = Trie.sexp_of_key
   let sexp_of_keychain = Trie.sexp_of_keychain
 
-  (* These functors are thin wrappers around [Keychainable] functors, which are
-        themselves thin wrappers around [Iterator] functors. See [test_iterator.ml]. *)
+  (* These functors are thin wrappers around [Keychainable] functors, which are themselves
+     thin wrappers around [Iterator] functors. See [test_iterator.ml]. *)
 
   module Make = Trie.Make
   module Of_string = Trie.Of_string

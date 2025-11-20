@@ -43,7 +43,7 @@ module%test _ : module type of Iterator = struct
   let get_exn = Iterator.get_exn
   let next_exn = Iterator.next_exn
 
-  (** type conversion is uninteresting **)
+  (** type conversion is uninteresting *)
   module Monomorphic = Iterator.Monomorphic
 
   module Make1 = Iterator.Make1

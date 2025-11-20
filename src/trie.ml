@@ -106,9 +106,9 @@ end = struct
       (fun rev_keys -> invariant_context ~keychainable ~rev_keys)
       (fun () ->
         Option.iter (datum t) ~f:(fun data ->
-          (* We only construct a keychain and check its invariant at nodes that have
-              data. There might be a keychain invariant such as no empty chains being
-              stored in the trie. *)
+          (* We only construct a keychain and check its invariant at nodes that have data.
+             There might be a keychain invariant such as no empty chains being stored in
+             the trie. *)
           let keychain = Keychainable.keychain_of_rev_keys keychainable rev_keys in
           chain_invariant keychain;
           data_invariant data);
@@ -624,8 +624,8 @@ module Node = struct
         ~f:(fun ~key variant ->
           let rev_keys = key :: rev_keys in
           let trie =
-            (* By re-bindings [rev_keys] at each clause, we cannot forget to re-add them to
-               the list of keychain when recurring. *)
+            (* By re-bindings [rev_keys] at each clause, we cannot forget to re-add them
+               to the list of keychain when recurring. *)
             match rev_keys, variant with
             | rev_keys, `Both (trie1, trie2) ->
               merge_at ~keychainable trie1 trie2 ~f ~rev_keys
