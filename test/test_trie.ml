@@ -20,8 +20,8 @@ module Examples = struct
   let keychainable = T.Keychain.keychainable
   let comparator_m = Trie.Keychainable.comparator_m keychainable
 
-  type keychain = int list [@@deriving compare, sexp_of]
-  type key = int [@@deriving compare, sexp_of]
+  type keychain = int list [@@deriving compare ~localize, sexp_of]
+  type key = int [@@deriving compare ~localize, sexp_of]
   type data = string [@@deriving compare ~localize, equal ~localize, sexp_of]
 
   (* We simulate alist constructors here so that Trie constructors, other than the
@@ -92,7 +92,7 @@ module Examples = struct
     List.init (List.length list + 1) ~f:(fun length -> List.take list length)
   ;;
 
-  let example_key_lists =
+  let%template example_key_lists =
     let present_keys =
       List.concat_map alists_with_duplicates ~f:(fun alist -> List.map alist ~f:fst)
     in
@@ -100,7 +100,7 @@ module Examples = struct
     let all_keys = present_keys @ absent_keys in
     all_keys
     |> List.concat_map ~f:all_prefixes
-    |> List.dedup_and_sort ~compare:[%compare: keychain]
+    |> List.dedup_and_sort ~compare:([%compare: keychain] [@mode local])
   ;;
 end
 

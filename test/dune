@@ -3,4 +3,4 @@
  (public_name base_trie.test_trie)
  (libraries base expect_test_helpers_core.expect_test_helpers_base trie)
  (preprocess
-  (pps ppx_jane)))
+  (pps ppx_jane -compare-require-explicit-locality)))
