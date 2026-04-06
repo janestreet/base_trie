@@ -3,4 +3,4 @@
  (public_name base_trie.trie_stable)
  (libraries bin_prot.shape core ppx_stable_witness.stable_witness trie)
  (preprocess
-  (pps ppx_jane)))
+  (pps ppx_jane -compare-require-explicit-locality)))
