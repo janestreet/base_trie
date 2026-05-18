@@ -15,12 +15,13 @@ depends: [
   "base"
   "bin_prot"
   "core"
+  "expect_test_helpers_base"
   "expect_test_helpers_core"
   "ppx_jane"
   "ppx_stable_witness"
   "dune"                     {>= "3.17.0"}
 ]
-available: arch != "arm32" & arch != "x86_32"
+available: arch != "x86_32"
 synopsis: "Trie data structure library"
 description: "
 This library provides an implementation of a trie data structure.
