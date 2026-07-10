@@ -22,6 +22,9 @@ depends: [
   "dune"                     {>= "3.17.0"}
 ]
 available: arch != "x86_32"
+conflicts: [
+  "oxcaml-compiler" {< "5.2.0minus39"}
+]
 synopsis: "Trie data structure library"
 description: "
 This library provides an implementation of a trie data structure.
